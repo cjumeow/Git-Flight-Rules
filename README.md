@@ -7,9 +7,6 @@ references
 
 順序應該是隨機的，想到就寫上去。每個rules我會確保在自己電腦上實驗過才commit上去。
 
-- 設定錯的 Remote repo
-    ```
-    $ git remote set-url origin [new URL]
 - 創建並切換分支
     ```
     $ git switch -c [branch_name]
@@ -55,3 +52,29 @@ references
 - `git rebase` [ref:1:46:17](https://www.youtube.com/watch?v=PN1k1CLXtlw)
 
     另一種合併方式，讓提交紀錄呈現線性歷史。記憶方式：你在 branch-A 上執行`git rebase <branch-B>`，就是把共同祖之後到 branch-A 的 HEAD 的所有提交，重新複製並重新應用到 branch-B 之上。
+
+## Remote
+- 設定錯的 Remote repo
+
+    ```
+    $ git remote set-url origin [new URL]
+    ```
+- Remote repo 有一些新的commits，你不想直接合併到 Local repo，可以先用 `git fetch` 看一下 diffs，沒問題之後再 `merge`/`rebase`
+    ```
+    $ git rebase o/main 
+    ```
+    🔖 side_note
+
+    `git fetch` 可以想成把 remote branch (e.g. `origin/main`) 同步到 remote repo 的最新狀態；並且不會更新到目前分支的狀態。
+- 解決 local repo 版本比 remote repo 舊的問題。想像一個你與你同事`git pull`某個 commit 後同時開發，但他比你早push幾個新的commits；此時你是無法push你自己local commits上去。
+
+    Solution：
+
+    先 `git pull` / `git pull --rebase` 現在remote repo 最新版本下來；前者是`git fetch` + `git merge`，後者是`git fetch` + `git rebase`，總之如果不想直接合併，就先 fetch 就好。
+
+    [ref:learngitbranching - Diverged history](https://learngitbranching.js.org/) 做一遍大概就懂了
+- 有時候在 github 開一個新的reop，創建新的README，並commit；並且本地也開新的專案跑了幾個commits，此時如果要push到這個新開的remote，就會跳出錯誤訊息：`fatal: refusing to merge unrelated histories`。解法：
+    ```
+    git pull origin main --allow-unrelated-histories
+    ```
+
