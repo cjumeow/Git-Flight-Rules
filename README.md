@@ -53,6 +53,33 @@ references
 
     另一種合併方式，讓提交紀錄呈現線性歷史。記憶方式：你在 branch-A 上執行`git rebase <branch-B>`，就是把共同祖之後到 branch-A 的 HEAD 的所有提交，重新複製並重新應用到 branch-B 之上。
 
+- 我想切換分支，但提示 "Your local changes to the following files would be overwritten by checkout"
+
+    當你在某個分支上，工作區有一些未提交的改動（修改或新增檔案），並嘗試切換分支（`git checkout <target-branch>`）時，Git 的運作機制如下：
+
+    * **當改動的檔案「有差異」**：若這些改動過的檔案，在「當前 Commit (HEAD)」與「目標分支指向的 Commit」內容不同，Git 會為了保護未存檔的資料不被覆蓋，硬性阻止切換（Abort）。
+    * **當改動的檔案「無差異」**：若這些檔案在兩個 Commit 的快照中內容完全相同，Git 則會允許你帶著這些未提交的改動順利切換過去。
+
+    #### 解法：
+    
+    - **暫存未提交的改動：**
+      
+       ```
+       $ git stash
+       $ git checkout <target-branch>
+       $ git stash pop # 切換後再把改動拿出來（若有衝突再手動解決）
+       ```
+    - 先提交為暫存 Commit：
+      ```
+      $ git add .
+      $ git commit -m "wip: save local changes"
+      $ git checkout <target-branch>
+      ```
+    - 完全放棄當前修改
+      ```
+      git reset --hard
+      git checkout <target-branch>
+      ```
 ## Remote
 - 設定錯的 Remote repo
 
@@ -77,4 +104,4 @@ references
     ```
     git pull origin main --allow-unrelated-histories
     ```
-
+- 
