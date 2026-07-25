@@ -80,6 +80,7 @@ references
       git reset --hard
       git checkout <target-branch>
       ```
+- 如果要請AI幫你在開一個新分支開發功能，請記得要讓 AI 做完之後幫你commit。如此一來，如果這個功能不是你想要的，就 `git branch -D` 刪除即可；如果是你想要的，就 `git merge`
 ## Remote
 - 設定錯的 Remote repo
 
